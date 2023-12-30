@@ -7,11 +7,10 @@ add_subdirectory(lib/FFmpeg)
 list(APPEND SOURCES
     src/main.cpp
     src/new_video_writer.cpp
-    src/new_video_writer.h
 )
 #MACOSX_BUNDLE WIN32 
 
-add_library(video_writer SHARED src/vwutils.h src/vwutils.cpp)
+add_library(video_writer SHARED src/new_video_writer.cpp src/new_video_writer.h)
 
 target_link_libraries(video_writer FFmpeg)
 

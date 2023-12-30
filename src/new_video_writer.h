@@ -1,4 +1,17 @@
-// Signatures for the class from new_video_writer.cpp
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+
+extern "C" {
+    #include <libavcodec/avcodec.h>
+    #include <libavformat/avformat.h>
+    #include <libswscale/swscale.h>
+    #include <inttypes.h>
+
+    #include "libavutil/frame.h"
+    #include "libavutil/imgutils.h"
+
+}
 
 class VideoWriter {
 public:
@@ -15,4 +28,5 @@ private:
     AVFormatContext* fmt_ctx;
     AVCodecContext* c;
     AVStream* stream;
+    uint64_t frame_count;
 };

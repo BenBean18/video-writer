@@ -1,18 +1,3 @@
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
-
-extern "C" {
-    #include <libavcodec/avcodec.h>
-    #include <libavformat/avformat.h>
-    #include <libswscale/swscale.h>
-    #include <inttypes.h>
-
-    #include "libavutil/frame.h"
-    #include "libavutil/imgutils.h"
-
-}
-
 #include "new_video_writer.h"
 
 VideoWriter::VideoWriter(char* filename, uint16_t fps, int fwidth, int fheight, bool iscolor=true) {
@@ -121,6 +106,8 @@ VideoWriter::VideoWriter(char* filename, uint16_t fps, int fwidth, int fheight, 
     pkt->data = NULL;
     pkt->size = 0;
 
+    frame_count = 0;
+
     std::cout << "packet initialized" << std::endl;
 
     // Write the header
@@ -159,7 +146,8 @@ VideoWriter::~VideoWriter() {
 }
 
 bool VideoWriter::write(uint8_t* data) {
-    std::cout << "writing" << std::endl;
+    std::cout << std::to_string(frame_count) << std::endl;
+    printf("writing to %p", data);
     // Store data in frame
     int ret = av_image_fill_arrays(frame->data, frame->linesize, data, c->pix_fmt, c->width, c->height, 1);
     if (ret < 0) {
@@ -181,6 +169,12 @@ bool VideoWriter::write(uint8_t* data) {
             std::cout << "Error during encoding" << std::endl;
             exit(1);
         }
+
+        // Set packet timestamp
+        pkt->pts = pkt->dts = pkt->duration = frame_count;
+
+        // Increment frame count
+        frame_count++;
 
         // write using fmt_ctx
         av_write_frame(fmt_ctx, pkt);
