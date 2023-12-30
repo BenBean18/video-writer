@@ -50,7 +50,7 @@ VideoWriter::VideoWriter(char* filename, uint16_t fps, int fwidth, int fheight, 
     c->gop_size = 10;
     c->max_b_frames = 1;
     // use bgr24
-    c->pix_fmt = AV_PIX_FMT_BGR24;
+    c->pix_fmt = AV_PIX_FMT_RGB24;
 
     // Open the codec
     if (avcodec_open2(c, codec, NULL) < 0) {
@@ -146,7 +146,7 @@ VideoWriter::~VideoWriter() {
 }
 
 bool VideoWriter::write(uint8_t* data) {
-    std::cout << std::to_string(frame_count) << std::endl;
+    std::cout << "frame number " << std::to_string(frame_count) << std::endl;
     printf("writing to %p", data);
     // Store data in frame
     int ret = av_image_fill_arrays(frame->data, frame->linesize, data, c->pix_fmt, c->width, c->height, 1);
