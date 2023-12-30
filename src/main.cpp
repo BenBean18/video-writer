@@ -18,7 +18,7 @@ void fillbgrframe(uint8_t* data)
 
 int main(void)
 {
-	VideoWriter writer("vwtest.mp4", 29.97, 1920, 1080, true);
+	VideoWriter writer("vwtest.mp4", 30, 1920, 1080, true);
 	uint8_t data[1920*1080*3];
 	fillbgrframe(&data[0]);
 	//printf("%d %d %d %d\n", data[0], data[1], data[2], data[3]);

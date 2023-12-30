@@ -13,7 +13,7 @@ extern "C" {
 class VideoWriter
 {
 public:
-	VideoWriter(char* filename, float fps, int fwidth, int fheight, bool iscolor=true);
+	VideoWriter(char* filename, uint16_t fps, int fwidth, int fheight, bool iscolor=true);
 	~VideoWriter();
 	
 	bool write(uint8_t* data); //assumed data is given in opencv bgr format

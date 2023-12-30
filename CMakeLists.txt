@@ -6,8 +6,8 @@ add_subdirectory(lib/FFmpeg)
 
 list(APPEND SOURCES
     src/main.cpp
-    src/vwutils.h
-    src/vwutils.cpp
+    src/new_video_writer.cpp
+    src/new_video_writer.h
 )
 #MACOSX_BUNDLE WIN32 
 
@@ -18,3 +18,7 @@ target_link_libraries(video_writer FFmpeg)
 add_executable(vwriter ${SOURCES})
 
 target_link_libraries(vwriter FFmpeg)
+
+add_executable(encode_video src/encode_video.cpp)
+
+target_link_libraries(encode_video FFmpeg)

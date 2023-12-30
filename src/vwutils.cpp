@@ -1,7 +1,7 @@
 #include "vwutils.h"
+// YAY https://github.com/leandromoreira/ffmpeg-libav-tutorial#learn-ffmpeg-libav-the-hard-way
 
-
-VideoWriter::VideoWriter(char* filename, float fps, int fwidth, int fheight, bool iscolor)
+VideoWriter::VideoWriter(char* filename, uint16_t fps, int fwidth, int fheight, bool iscolor)
 {
 
 	int error=avio_open(&avioctx, filename, AVIO_FLAG_WRITE);
@@ -90,7 +90,7 @@ void VideoWriter::setup_encoder(void)
 {
 	//setup encoder and its context and properties
 
-	encoder=avcodec_find_encoder_by_name("h264_videotoolbox");
+	encoder=avcodec_find_encoder_by_name("h264_v4l2m2m");
 	
 	if (encoder==NULL)
 	{
@@ -132,9 +132,13 @@ void VideoWriter::add_video_stream(void)
 	avfctx->oformat = av_guess_format(NULL, filepath, NULL);//new AVOutputFormat;
 	printf("oformat name: %s,\n full: %s \n, codecid: %d\n", 
 		avfctx->oformat->name, avfctx->oformat->long_name, avfctx->oformat->video_codec);
-	avs->time_base=(AVRational){100, (int)(100*_fps)};
 
-	avcctx->time_base=avs->time_base; //yay
+	avs->time_base = (AVRational){1, _fps}; //yay
+	avs->avg_frame_rate = (AVRational){_fps, 1};
+
+	avcctx->time_base = (AVRational){1, _fps}; //yay
+	avcctx->framerate = (AVRational){_fps, 1}; // framerate is fps (obviously)
+
 	avcctx->gop_size=12; //is this a typical value?
 	avcctx->pix_fmt=AV_PIX_FMT_YUV420P;
 
@@ -181,9 +185,11 @@ bool VideoWriter::write(uint8_t *data)
 		{
 			std::cerr << "Problem\n";
 		}
+		av_packet_unref(&avpkt);
+		avcctx->frame_number++;
 		av_packet_rescale_ts(&avpkt, avcctx->time_base, avs->time_base);
-		avpkt.stream_index= avs->index;
-		avpkt.pts=pts++;
+		// avpkt.stream_index= avs->index;
+		// avpkt.pts=pts++;
 		//pts++;
 		ret=av_interleaved_write_frame(avfctx, &avpkt);
 		if (ret<0)
