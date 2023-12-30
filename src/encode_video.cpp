@@ -97,7 +97,7 @@ int main(int argc, char **argv)
         exit(1);
 
     /* put sample parameters */
-    c->bit_rate = 5000000;
+    c->bit_rate = 10000000;
     /* resolution must be a multiple of two */
     c->width = 1920;
     c->height = 1080;

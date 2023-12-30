@@ -43,12 +43,12 @@ VideoWriter::VideoWriter(char* filename, uint16_t fps, int fwidth, int fheight, 
     }
 
     // Set the parameters
-    c->bit_rate = 500000;
+    c->bit_rate = 5000000;
     c->width = fwidth;
     c->height = fheight;
     c->time_base = (AVRational){1, fps};
-    c->gop_size = 10;
-    c->max_b_frames = 1;
+    c->gop_size = 60;
+    // c->max_b_frames = 1;
     // use bgr24
     c->pix_fmt = AV_PIX_FMT_RGB24;
 
@@ -171,7 +171,7 @@ bool VideoWriter::write(uint8_t* data) {
         }
 
         // Set packet timestamp
-        pkt->pts = pkt->dts = pkt->duration = frame_count;
+        pkt->pts = pkt->dts = frame_count * 1000 / c->time_base.num;
 
         // Increment frame count
         frame_count++;
